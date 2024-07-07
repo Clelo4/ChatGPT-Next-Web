@@ -5,7 +5,7 @@ const id: PartialLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
+      "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/auth) atau di halaman [Pengaturan](/settings).",
   },
   Auth: {
     Title: "Diperlukan Kode Akses",
@@ -369,8 +369,8 @@ const id: PartialLocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
-    },  
+      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan",
+    },
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",

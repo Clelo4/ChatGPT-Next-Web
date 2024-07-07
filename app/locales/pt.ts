@@ -8,8 +8,8 @@ const pt: PartialLocaleType = {
   WIP: "Em breve...",
   Error: {
     Unauthorized: isApp
-      ? "Chave API inválida, por favor verifique em [Configurações](/#/settings)."
-      : "Acesso não autorizado, por favor insira o código de acesso em [auth](/#/auth) ou insira sua Chave API OpenAI.",
+      ? "Chave API inválida, por favor verifique em [Configurações](/settings)."
+      : "Acesso não autorizado, por favor insira o código de acesso em [auth](/auth) ou insira sua Chave API OpenAI.",
   },
   Auth: {
     Title: "Necessário Código de Acesso",

@@ -89,6 +89,26 @@ if (mode !== "export") {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
       },
+      {
+        source: "/settings",
+        destination: "/"
+      },
+      {
+        source: "/auth",
+        destination: "/"
+      },
+      {
+        source: "/masks",
+        destination: "/"
+      },
+      {
+        source: "/new-chat",
+        destination: "/"
+      },
+      {
+        source: "/chat",
+        destination: "/"
+      }
     ];
 
     return {

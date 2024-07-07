@@ -9,8 +9,8 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      ? "Invalid API Key, please check it in [Settings](/settings) page."
+      : "Unauthorized access, please enter access code in [auth](/auth) page, or enter your OpenAI API Key.",
   },
   Auth: {
     Title: "Need Access Code",

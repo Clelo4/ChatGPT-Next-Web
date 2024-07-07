@@ -140,5 +140,8 @@ export const getServerSideConfig = () => {
     customModels,
     defaultModel,
     allowedWebDevEndpoints,
+
+    jwtSignKey: process.env.JWT_PRIVATE_KEY as string,
+    jwtDecodeKey: process.env.JWT_PUBLIC_KEY as string,
   };
 };

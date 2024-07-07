@@ -10,8 +10,8 @@ const sk: PartialLocaleType = {
   WIP: "Už čoskoro...",
   Error: {
     Unauthorized: isApp
-      ? "Neplatný API kľúč, prosím skontrolujte ho na stránke [Nastavenia](/#/settings)."
-      : "Neoprávnený prístup, prosím zadajte prístupový kód na stránke [auth](/#/auth), alebo zadajte váš OpenAI API kľúč.",
+      ? "Neplatný API kľúč, prosím skontrolujte ho na stránke [Nastavenia](/settings)."
+      : "Neoprávnený prístup, prosím zadajte prístupový kód na stránke [auth](/auth), alebo zadajte váš OpenAI API kľúč.",
   },
   Auth: {
     Title: "Potrebný prístupový kód",

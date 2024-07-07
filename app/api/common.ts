@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { getServerSideConfig } from "../config/server";
 import {
   DEFAULT_MODELS,
@@ -161,4 +163,60 @@ export async function requestOpenai(req: NextRequest) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+export const returnNoAuth = () => {
+  return NextResponse.json(
+    { errCode: 1, message: "No permission, need login" },
+    { status: 401 },
+  );
+};
+
+export const returnError = (message?: string) => {
+  return NextResponse.json({ errCode: 1, message: message || "Unknown error" });
+};
+
+export const returnForbidden = (message?: string) => {
+  return NextResponse.json({ errCode: 1, message }, { status: 403 });
+};
+
+export const returnUnknownError = (message?: string) => {
+  return NextResponse.json(
+    { errCode: 1, message: message ?? "Unknown error" },
+    { status: 500 },
+  );
+};
+
+export const returnSuccess = (data?: any) => {
+  return NextResponse.json({ errCode: 0, data });
+};
+
+export const jwtSign = (type: string, data: string) => {
+  const payload = {
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+    iat: Math.floor(Date.now() / 1000),
+    iss: "gpt.chengjunjie.com",
+    type,
+    data,
+  };
+  return jwt.sign(payload, serverConfig.jwtSignKey, {
+    algorithm: "RS256",
+  });
+};
+
+export const jwtVerify = (token: string) => {
+  return jwt.verify(token, serverConfig.jwtDecodeKey, {
+    algorithms: ["RS256"],
+  });
+};
+
+/**
+ * 对输入字符串进行sha256 hash
+ * @param inputString 输入字符串
+ * @returns hash
+ */
+export function hashStringUsingSHA256(inputString: string) {
+  const hash = crypto.createHash("sha256");
+  hash.update(inputString);
+  return hash.digest("hex");
 }
