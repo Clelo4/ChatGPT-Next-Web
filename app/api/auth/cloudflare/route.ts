@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtSign } from "../../common";
+import { getServerSideConfig } from "@/app/config/server";
 
-const SECRET_KEY = "0x4AAAAAAAeaY1X3RKMFtyg7vlnYSTxRrAw";
+const serverConfig = getServerSideConfig();
+const cfSecrectKey = serverConfig.cfSecrectKey;
 
 async function validateToken(token: string) {
   // Validate the token by calling the
   // "/siteverify" API endpoint.
   let formData = new FormData();
-  formData.append("secret", SECRET_KEY);
+  formData.append("secret", cfSecrectKey);
   formData.append("response", token);
 
   const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";

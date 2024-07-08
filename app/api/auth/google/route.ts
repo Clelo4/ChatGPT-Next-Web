@@ -3,9 +3,10 @@ import { OAuth2Client } from "google-auth-library";
 import { returnError, returnForbidden, returnSuccess } from "../../common";
 import { hashStringUsingSHA256 } from "@/app/utils/crypto";
 import { query } from "../../db";
+import { getServerSideConfig } from "@/app/config/server";
 
-const CLIENT_ID =
-  "659771653697-1nrsdqhb9gg7opesinsov7cu8bo03h9r.apps.googleusercontent.com";
+const serverConfig = getServerSideConfig();
+const googleClientId = serverConfig.googleClientId;
 
 interface GoogleVerifyData {
   iss: string;
@@ -27,7 +28,7 @@ const client = new OAuth2Client();
 async function verify(idToken: string) {
   const ticket = await client.verifyIdToken({
     idToken,
-    audience: CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+    audience: googleClientId, // Specify the CLIENT_ID of the app that accesses the backend
     // Or, if multiple clients access the backend:
     //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
   });
@@ -57,7 +58,7 @@ export default async function handler(
   if (verifyRes.email_verified !== true) {
     return returnError("Google email is not verified");
   }
-  if (verifyRes.aud !== CLIENT_ID) {
+  if (verifyRes.aud !== googleClientId) {
     return returnError("Google aud is not match");
   }
   if (verifyRes.iss !== "https://accounts.google.com") {

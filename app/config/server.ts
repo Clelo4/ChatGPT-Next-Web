@@ -143,5 +143,8 @@ export const getServerSideConfig = () => {
 
     jwtSignKey: process.env.JWT_PRIVATE_KEY as string,
     jwtDecodeKey: process.env.JWT_PUBLIC_KEY as string,
+
+    cfSecrectKey: process.env.CF_SECRECT_KEY as string,
+    googleClientId: process.env.GOOGLE_CLIENT_ID as string,
   };
 };
