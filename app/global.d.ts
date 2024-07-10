@@ -28,4 +28,7 @@ declare interface Window {
     };
   };
   turnstile?: any;
+  google?: any;
+  onloadTurnstileCallback?: any;
+  clipboardData?: any;
 }
