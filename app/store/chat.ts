@@ -3,7 +3,6 @@ import { trimTopic, getMessageTextContent } from "../utils";
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
-import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
@@ -58,8 +57,6 @@ export interface ChatSession {
   lastUpdate: number;
   lastSummarizeIndex: number;
   clearContextIndex?: number;
-
-  mask: Mask;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -81,8 +78,6 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
-
-    mask: createEmptyMask(),
   };
 }
 

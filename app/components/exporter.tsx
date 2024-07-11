@@ -33,7 +33,6 @@ import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
 import { toBlob, toPng } from "html-to-image";
-import { DEFAULT_MASK_AVATAR } from "../store/mask";
 
 import { prettyObject } from "../utils/format";
 import {
@@ -417,18 +416,6 @@ export function PreviewActions(props: {
 }
 
 function ExportAvatar(props: { avatar: string }) {
-  if (props.avatar === DEFAULT_MASK_AVATAR) {
-    return (
-      <img
-        src={BotIcon.src}
-        width={30}
-        height={30}
-        alt="bot"
-        className="user-avatar"
-      />
-    );
-  }
-
   return <Avatar avatar={props.avatar} />;
 }
 

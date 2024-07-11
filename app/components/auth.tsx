@@ -1,5 +1,4 @@
 import styles from "./auth.module.scss";
-import { IconButton } from "./button";
 
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
@@ -44,7 +43,6 @@ export function AuthPage() {
       </div>
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-      {/* <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div> */}
 
       {/* <input
         className={styles["auth-input"]}
@@ -70,34 +68,6 @@ export function AuthPage() {
           }}
         ></TurnstileCaptcha>
       )}
-
-      {!accessStore.hideUserApiKey ? (
-        <>
-          <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
-          <input
-            className={styles["auth-input"]}
-            type="password"
-            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
-            value={accessStore.openaiApiKey}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.openaiApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-          <input
-            className={styles["auth-input"]}
-            type="password"
-            placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
-            value={accessStore.googleApiKey}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.googleApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </>
-      ) : null}
 
       <div className={styles["auth-actions"]}>
         {/* <IconButton

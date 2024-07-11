@@ -103,10 +103,6 @@ if (mode !== "export") {
         destination: "/"
       },
       {
-        source: "/masks",
-        destination: "/"
-      },
-      {
         source: "/new-chat",
         destination: "/"
       },

@@ -49,19 +49,6 @@
   position: relative;
   transition: width ease 0.05s;
 
-  .sidebar-header-bar {
-    display: flex;
-    margin-bottom: 20px;
-
-    .sidebar-bar-button {
-      flex-grow: 1;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
-    }
-  }
-
   &:hover,
   &:active {
     .sidebar-drag {
@@ -239,17 +226,6 @@
     position: relative;
     display: flex;
     justify-content: center;
-  }
-
-  .sidebar-header-bar {
-    flex-direction: column;
-
-    .sidebar-bar-button {
-      &:not(:last-child) {
-        margin-right: 0;
-        margin-bottom: 10px;
-      }
-    }
   }
 
   .chat-item {

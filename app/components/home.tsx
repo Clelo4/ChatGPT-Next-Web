@@ -51,10 +51,6 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
 
-const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
-  loading: () => <Loading noLogo />,
-});
-
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -128,8 +124,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder =
-    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder = true;
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -155,8 +150,6 @@ function Screen() {
           <div className={styles["window-content"]} id={SlotID.AppBody}>
             <Routes>
               <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>

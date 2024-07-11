@@ -161,7 +161,7 @@ export function getHeaders() {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
+  const modelConfig: any = {};
   const isGoogle = modelConfig.providerName == ServiceProvider.Google;
   const isAzure = modelConfig.providerName === ServiceProvider.Azure;
   const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;

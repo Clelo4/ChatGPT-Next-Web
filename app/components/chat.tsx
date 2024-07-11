@@ -91,8 +91,6 @@ import {
   ServiceProvider,
 } from "../constant";
 import { Avatar } from "./emoji";
-import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
-import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
@@ -107,7 +105,6 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const maskStore = useMaskStore();
   const navigate = useNavigate();
 
   return (
@@ -136,34 +133,10 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             text={Locale.Chat.Config.SaveAs}
             onClick={() => {
               navigate(Path.Masks);
-              setTimeout(() => {
-                maskStore.create(session.mask);
-              }, 500);
             }}
           />,
         ]}
-      >
-        <MaskConfig
-          mask={session.mask}
-          updateMask={(updater) => {
-            const mask = { ...session.mask };
-            updater(mask);
-            chatStore.updateCurrentSession((session) => (session.mask = mask));
-          }}
-          shouldSyncFromGlobal
-          extraListItems={
-            session.mask.modelConfig.sendMemory ? (
-              <ListItem
-                className="copyable"
-                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
-                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-              ></ListItem>
-            ) : (
-              <></>
-            )
-          }
-        ></MaskConfig>
-      </Modal>
+      ></Modal>
     </div>
   );
 }
@@ -175,7 +148,6 @@ function PromptToast(props: {
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const context = session.mask.context;
 
   return (
     <div className={styles["prompt-toast"]} key="prompt-toast">
@@ -186,9 +158,6 @@ function PromptToast(props: {
           onClick={() => props.setShowModal(true)}
         >
           <BrainIcon />
-          <span className={styles["prompt-toast-content"]}>
-            {Locale.Context.Toast(context.length)}
-          </span>
         </div>
       )}
       {props.showModal && (
@@ -448,10 +417,8 @@ export function ChatActions(props: {
   const stopAll = () => ChatControllerPool.stopAll();
 
   // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const currentProviderName =
-    chatStore.currentSession().mask.modelConfig?.providerName ||
-    ServiceProvider.OpenAI;
+  const currentModel = "gpt3";
+  const currentProviderName = ServiceProvider.OpenAI;
   const allModels = useAllModels();
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
@@ -484,11 +451,6 @@ export function ChatActions(props: {
     if (isUnavaliableModel && models.length > 0) {
       // show next model to default model if exist
       let nextModel = models.find((model) => model.isDefault) || models[0];
-      chatStore.updateCurrentSession((session) => {
-        session.mask.modelConfig.model = nextModel.name;
-        session.mask.modelConfig.providerName = nextModel?.provider
-          ?.providerName as ServiceProvider;
-      });
       showToast(nextModel.name);
     }
   }, [chatStore, currentModel, models]);
@@ -590,12 +552,6 @@ export function ChatActions(props: {
           onSelection={(s) => {
             if (s.length === 0) return;
             const [model, providerName] = s[0].split("@");
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = model as ModelType;
-              session.mask.modelConfig.providerName =
-                providerName as ServiceProvider;
-              session.mask.syncGlobalConfig = false;
-            });
             showToast(model);
           }}
         />
@@ -653,14 +609,6 @@ export function EditMessageModal(props: { onClose: () => void }) {
             ></input>
           </ListItem>
         </List>
-        <ContextPrompts
-          context={messages}
-          updateContext={(updater) => {
-            const newMessages = messages.slice();
-            updater(newMessages);
-            setMessages(newMessages);
-          }}
-        />
       </Modal>
     </div>
   );
@@ -833,12 +781,6 @@ function _Chat() {
           }
         }
       });
-
-      // auto sync mask config from global config
-      if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
-      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -939,10 +881,6 @@ function _Chat() {
   };
 
   const onPinMessage = (message: ChatMessage) => {
-    chatStore.updateCurrentSession((session) =>
-      session.mask.context.push(message),
-    );
-
     showToast(Locale.Chat.Actions.PinToastContent, {
       text: Locale.Chat.Actions.PinToastAction,
       onClick: () => {
@@ -952,8 +890,8 @@ function _Chat() {
   };
 
   const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : session.mask.context.slice();
-  }, [session.mask.context, session.mask.hideContext]);
+    return [];
+  }, []);
   const accessStore = useAccessStore();
 
   if (
@@ -1131,7 +1069,7 @@ function _Chat() {
 
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-      const currentModel = chatStore.currentSession().mask.modelConfig.model;
+      const currentModel = "gpt3";
       if (!isVisionModel(currentModel)) {
         return;
       }
@@ -1264,19 +1202,6 @@ function _Chat() {
               }}
             />
           </div>
-          {showMaxIcon && (
-            <div className="window-action-button">
-              <IconButton
-                icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
-                bordered
-                onClick={() => {
-                  config.update(
-                    (config) => (config.tightBorder = !config.tightBorder),
-                  );
-                }}
-              />
-            </div>
-          )}
         </div>
 
         <PromptToast
@@ -1340,14 +1265,6 @@ function _Chat() {
                                 });
                               }
                             }
-                            chatStore.updateCurrentSession((session) => {
-                              const m = session.mask.context
-                                .concat(session.messages)
-                                .find((m) => m.id === message.id);
-                              if (m) {
-                                m.content = newContent;
-                              }
-                            });
                           }}
                         ></IconButton>
                       </div>
@@ -1357,14 +1274,7 @@ function _Chat() {
                         <>
                           {["system"].includes(message.role) ? (
                             <Avatar avatar="2699-fe0f" />
-                          ) : (
-                            <MaskAvatar
-                              avatar={session.mask.avatar}
-                              model={
-                                message.model || session.mask.modelConfig.model
-                              }
-                            />
-                          )}
+                          ) : null}
                         </>
                       )}
                     </div>
