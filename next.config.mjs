@@ -45,6 +45,8 @@ const nextConfig = {
       config.resolve.alias[`@${item}`] = path.resolve(__dirname, `app/${item}`);
     });
 
+    config.resolve.alias['@app'] = path.resolve(__dirname, 'app');
+
     return config;
   },
   output: mode,

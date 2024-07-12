@@ -1,6 +1,6 @@
 import React from "react";
-import GithubIcon from "../icons/github.svg";
-import ResetIcon from "../../icons/reload.svg";
+import GithubIcon from "@icons/github.svg";
+import ResetIcon from "@icons/reload.svg";
 import Button from "../Button";
 import Locale from "@/app/locales";
 import { showConfirm } from "../ui-lib";

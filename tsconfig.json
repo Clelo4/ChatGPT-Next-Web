@@ -30,6 +30,8 @@
       "@pages/*": ["./app/pages/*"],
       "@styles/*": ["./app/styles/*"],
       "@hook/*": ["./app/hook/*"],
+      "@app": ["./app"],
+      "@app/*": ["./app/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/calcTextareaHeight.ts"],

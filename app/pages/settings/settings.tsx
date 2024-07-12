@@ -2,22 +2,22 @@ import { useState, useEffect, useMemo } from "react";
 
 import styles from "./settings.module.scss";
 
-import ResetIcon from "../../icons/reload.svg";
-import AddIcon from "../../icons/add.svg";
-import CloseIcon from "../../icons/close.svg";
-import CopyIcon from "../../icons/copy.svg";
-import ClearIcon from "../../icons/clear.svg";
-import LoadingIcon from "../../icons/three-dots.svg";
-import EditIcon from "../../icons/edit.svg";
-import EyeIcon from "../../icons/eye.svg";
-import DownloadIcon from "../../icons/download.svg";
-import UploadIcon from "../../icons/upload.svg";
-import ConfigIcon from "../../icons/config.svg";
-import ConfirmIcon from "../../icons/confirm.svg";
+import ResetIcon from "@icons/reload.svg";
+import AddIcon from "@icons/add.svg";
+import CloseIcon from "@icons/close.svg";
+import CopyIcon from "@icons/copy.svg";
+import ClearIcon from "@icons/clear.svg";
+import LoadingIcon from "@icons/three-dots.svg";
+import EditIcon from "@icons/edit.svg";
+import EyeIcon from "@icons/eye.svg";
+import DownloadIcon from "@icons/download.svg";
+import UploadIcon from "@icons/upload.svg";
+import ConfigIcon from "@icons/config.svg";
+import ConfirmIcon from "@icons/confirm.svg";
 
-import ConnectionIcon from "../../icons/connection.svg";
-import CloudSuccessIcon from "../../icons/cloud-success.svg";
-import CloudFailIcon from "../../icons/cloud-fail.svg";
+import ConnectionIcon from "@icons/connection.svg";
+import CloudSuccessIcon from "@icons/cloud-success.svg";
+import CloudFailIcon from "@icons/cloud-fail.svg";
 
 import {
   Input,

@@ -1,5 +1,5 @@
 import React from "react";
-import BotIcon from "../../icons/bot.svg";
+import BotIcon from "@icons/bot.svg";
 import EmojiAvatar from "../EmojiAvatar";
 
 export default function Avatar(props: { model?: any; avatar?: string }) {

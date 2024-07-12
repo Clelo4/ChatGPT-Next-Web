@@ -19,13 +19,13 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
 const LANG_KEY = "lang";
 const DEFAULT_LANG = "cn";
 
-const fallbackLang = cn;
+const Locale = cn;
 const targetLang = ALL_LANGS[getLang()] as LocaleType;
 
 // if target lang missing some fields, it will use fallback lang string
-merge(fallbackLang, targetLang);
+merge(Locale, targetLang);
 
-export default fallbackLang as LocaleType;
+export default Locale as LocaleType;
 
 function getItem(key: string) {
   try {
