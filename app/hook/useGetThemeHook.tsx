@@ -1,4 +1,3 @@
-import React from "react";
 import { Theme, useAppConfig } from "../store";
 
 // 获取当前主题

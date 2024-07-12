@@ -2,14 +2,13 @@ import { LLMModel } from "../client/api";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
-  DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
   ServiceProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
-export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
+export type ModelType = string;
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -45,10 +44,9 @@ export const DEFAULT_CONFIG = {
   hideBuiltinMasks: false, // dont add builtin masks
 
   customModels: "",
-  models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
+    model: "gpt-3.5-turbo",
     providerName: "Openai" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,

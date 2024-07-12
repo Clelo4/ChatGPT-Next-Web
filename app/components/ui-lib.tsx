@@ -14,7 +14,7 @@ import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
-import { IconButton } from "./button";
+import Button from "./Button";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -261,7 +261,7 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
 
   return (
     <div className={"password-input-container"}>
-      <IconButton
+      <Button
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
         className={"password-eye"}
@@ -308,7 +308,7 @@ export function showConfirm(content: any) {
       <Modal
         title={Locale.UI.Confirm}
         actions={[
-          <IconButton
+          <Button
             key="cancel"
             text={Locale.UI.Cancel}
             onClick={() => {
@@ -319,8 +319,8 @@ export function showConfirm(content: any) {
             tabIndex={0}
             bordered
             shadow
-          ></IconButton>,
-          <IconButton
+          ></Button>,
+          <Button
             key="confirm"
             text={Locale.UI.Confirm}
             type="primary"
@@ -333,7 +333,7 @@ export function showConfirm(content: any) {
             autoFocus
             bordered
             shadow
-          ></IconButton>,
+          ></Button>,
         ]}
         onClose={closeModal}
       >
@@ -383,7 +383,7 @@ export function showPrompt(content: any, value = "", rows = 3) {
       <Modal
         title={content}
         actions={[
-          <IconButton
+          <Button
             key="cancel"
             text={Locale.UI.Cancel}
             onClick={() => {
@@ -393,8 +393,8 @@ export function showPrompt(content: any, value = "", rows = 3) {
             bordered
             shadow
             tabIndex={0}
-          ></IconButton>,
-          <IconButton
+          ></Button>,
+          <Button
             key="confirm"
             text={Locale.UI.Confirm}
             type="primary"
@@ -406,7 +406,7 @@ export function showPrompt(content: any, value = "", rows = 3) {
             bordered
             shadow
             tabIndex={0}
-          ></IconButton>,
+          ></Button>,
         ]}
         onClose={closeModal}
       >

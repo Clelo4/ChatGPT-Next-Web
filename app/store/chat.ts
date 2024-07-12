@@ -5,9 +5,7 @@ import { showToast } from "../components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
 import {
   DEFAULT_INPUT_TEMPLATE,
-  DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
-  KnowledgeCutOffDate,
   ServiceProvider,
   ModelProvider,
   StoreKey,
@@ -305,7 +303,7 @@ export const useChatStore = createPersistStore(
 
       async onUserInput(content: string, attachImages?: string[]) {
         const session = get().currentSession();
-        const modelConfig = session.mask.modelConfig;
+        const modelConfig = {};
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
