@@ -20,7 +20,16 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@store/*": ["./app/store/*"],
+      "@config/*": ["./app/config/*"],
+      "@icons/*": ["./app/icons/*"],
+      "@components/*": ["./app/components/*"],
+      "@client/*": ["./app/client/*"],
+      "@locales/*": ["./app/locales/*"],
+      "@pages/*": ["./app/pages/*"],
+      "@styles/*": ["./app/styles/*"],
+      "@hook/*": ["./app/hook/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/calcTextareaHeight.ts"],

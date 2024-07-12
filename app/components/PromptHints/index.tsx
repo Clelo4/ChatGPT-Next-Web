@@ -1,6 +1,6 @@
 import { Prompt } from "@/app/store/prompt";
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./module.scss";
+import styles from "./index.module.scss";
 
 export type RenderPompt = Pick<Prompt, "title" | "content">;
 

@@ -1,10 +1,27 @@
 import webpack from "webpack";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
 
 const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
 console.log("[Next] build with chunk: ", !disableChunk);
+
+const APP_ALIAS_SUB_PATH = [
+  "store",
+  "config",
+  "icons",
+  "components",
+  "client",
+  "locales",
+  "pages",
+  "styles",
+  "hook",
+  "utils",
+];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -23,6 +40,10 @@ const nextConfig = {
     config.resolve.fallback = {
       child_process: false,
     };
+
+    APP_ALIAS_SUB_PATH.forEach(item => {
+      config.resolve.alias[`@${item}`] = path.resolve(__dirname, `app/${item}`);
+    });
 
     return config;
   },
@@ -100,10 +121,6 @@ if (mode !== "export") {
       },
       {
         source: "/auth",
-        destination: "/"
-      },
-      {
-        source: "/new-chat",
         destination: "/"
       },
       {

@@ -108,21 +108,10 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
-  const cutoff =
-    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
-  // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
-  const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
-
-  var serviceProvider = "OpenAI";
-  if (modelInfo) {
-    // TODO: auto detect the providerName from the modelConfig.model
-
-    // Directly use the providerName from the modelInfo
-    serviceProvider = modelInfo.provider.providerName;
-  }
+  const cutoff = null;
 
   const vars = {
-    ServiceProvider: serviceProvider,
+    ServiceProvider: "",
     cutoff,
     model: modelConfig.model,
     time: new Date().toString(),
@@ -145,7 +134,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   Object.entries(vars).forEach(([name, value]) => {
     const regex = new RegExp(`{{${name}}}`, "g");
-    output = output.replace(regex, value.toString()); // Ensure value is a string
+    output = output.replace(regex, "".toString()); // Ensure value is a string
   });
 
   return output;

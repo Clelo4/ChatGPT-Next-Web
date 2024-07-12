@@ -1,16 +1,13 @@
 import { useEffect, useRef, useMemo } from "react";
 
-import styles from "./module.scss";
+import SettingsIcon from "@icons/settings.svg";
+import ChatGptIcon from "@icons/chatgpt.svg";
+import AddIcon from "@icons/add.svg";
+import DeleteIcon from "@icons/delete.svg";
+import DragIcon from "@icons/drag.svg";
 
-import SettingsIcon from "../../icons/settings.svg";
-import ChatGptIcon from "../../icons/chatgpt.svg";
-import AddIcon from "../../icons/add.svg";
-import DeleteIcon from "../../icons/delete.svg";
-import DragIcon from "../../icons/drag.svg";
-
-import Locale from "../../locales";
-
-import { useAppConfig, useChatStore } from "../../store";
+import Locale from "@/app/locales";
+import { useAppConfig, useChatStore } from "@store/index";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -24,7 +21,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "../ui-lib";
-import Button from "../Button";
+import Button from "@components/Button";
+import styles from "./index.module.scss";
 
 const ChatList = dynamic(async () => (await import("../ChatList")).ChatList, {
   loading: () => null,
@@ -198,7 +196,7 @@ export function SideBar(props: { className?: string }) {
                 chatStore.newSession();
                 navigate(Path.Chat);
               } else {
-                navigate(Path.NewChat);
+                // navigate(Path.NewChat);
               }
             }}
             shadow
