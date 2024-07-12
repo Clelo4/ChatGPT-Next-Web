@@ -1,10 +1,10 @@
 import { Draggable } from "@hello-pangea/dnd";
 import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import styles from "./ChatItem.mobule.scss";
 import { Path } from "@/app/constant";
 import Locale from "../../locales";
 import DeleteIcon from "../../icons/delete.svg";
+import styles from "./ChatItem.module.scss";
 
 export default function ChatItem(props: {
   onClick?: () => void;
@@ -31,7 +31,7 @@ export default function ChatItem(props: {
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
-          className={`${styles["chat-item"]} ${
+          className={`AA ${styles["chat-item"]} ${
             props.selected &&
             (currentPath === Path.Chat || currentPath === Path.Home) &&
             styles["chat-item-selected"]
