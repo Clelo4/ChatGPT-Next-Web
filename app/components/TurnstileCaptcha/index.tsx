@@ -10,7 +10,7 @@ interface IProps {
 
 const validateCaptcha = async (token: string) => {
   try {
-    const data = await jsonPost<{ jwtToken: string }>("/api/auth/cloudflare", {
+    const data = await jsonPost<{ jwtToken: string }>("/api/login/cloudflare", {
       token,
     });
 

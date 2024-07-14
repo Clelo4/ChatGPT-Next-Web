@@ -1,35 +1,38 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
 } from "@app/constant";
-import { useAppConfig } from "@store/index";
 import { useMobileScreen } from "../utils";
+import { useStore } from "@app/store";
 
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
-  const config = useAppConfig();
+  const { systemStore } = useStore();
+
   const startX = useRef(0);
-  const startDragWidth = useRef(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
+  const startDragWidth = useRef(
+    systemStore.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH,
+  );
   const lastUpdateTime = useRef(Date.now());
 
   const toggleSideBar = () => {
-    config.update((config) => {
-      if (config.sidebarWidth < MIN_SIDEBAR_WIDTH) {
-        config.sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
-      } else {
-        config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
-      }
-    });
+    if (systemStore.sidebarWidth < MIN_SIDEBAR_WIDTH) {
+      systemStore.sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
+      systemStore.setSidebarWidth(DEFAULT_SIDEBAR_WIDTH);
+    } else {
+      systemStore.sidebarWidth = NARROW_SIDEBAR_WIDTH;
+      systemStore.setSidebarWidth(NARROW_SIDEBAR_WIDTH);
+    }
   };
 
   const onDragStart = (e: MouseEvent) => {
     // Remembers the initial width each time the mouse is pressed
     startX.current = e.clientX;
-    startDragWidth.current = config.sidebarWidth;
+    startDragWidth.current = systemStore.sidebarWidth;
     const dragStartTime = Date.now();
 
     const handleDragMove = (e: MouseEvent) => {
@@ -39,13 +42,11 @@ function useDragSideBar() {
       lastUpdateTime.current = Date.now();
       const d = e.clientX - startX.current;
       const nextWidth = limit(startDragWidth.current + d);
-      config.update((config) => {
-        if (nextWidth < MIN_SIDEBAR_WIDTH) {
-          config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
-        } else {
-          config.sidebarWidth = nextWidth;
-        }
-      });
+      if (nextWidth < MIN_SIDEBAR_WIDTH) {
+        systemStore.setSidebarWidth(NARROW_SIDEBAR_WIDTH);
+      } else {
+        systemStore.setSidebarWidth(nextWidth);
+      }
     };
 
     const handleDragEnd = () => {
@@ -66,15 +67,15 @@ function useDragSideBar() {
 
   const isMobileScreen = useMobileScreen();
   const shouldNarrow =
-    !isMobileScreen && config.sidebarWidth < MIN_SIDEBAR_WIDTH;
+    !isMobileScreen && systemStore.sidebarWidth < MIN_SIDEBAR_WIDTH;
 
   useEffect(() => {
     const barWidth = shouldNarrow
       ? NARROW_SIDEBAR_WIDTH
-      : limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
+      : limit(systemStore.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
     const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
     document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
-  }, [config.sidebarWidth, isMobileScreen, shouldNarrow]);
+  }, [systemStore.sidebarWidth, isMobileScreen, shouldNarrow]);
 
   return {
     onDragStart,

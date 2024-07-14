@@ -10,7 +10,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function jsonPost<T>(url: string, params = {}): Promise<T> {
+export async function $fetch<T>(url: string, params = {}): Promise<T> {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -30,10 +30,12 @@ export async function jsonPost<T>(url: string, params = {}): Promise<T> {
 
     const res = await response.json();
 
+    console.log("res", res);
+
     // Check if there's an errCode field
-    if (res.errCode !== undefined) {
-      if (res.errCode !== 0) {
-        throw new ApiError(res.message, res.errCode);
+    if (res.code !== undefined) {
+      if (res.code !== 0) {
+        throw new ApiError(res.message, res.code);
       }
       return res.data; // Return data if errCode is 0
     } else {

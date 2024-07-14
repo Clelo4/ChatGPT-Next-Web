@@ -2,6 +2,13 @@ import { Prompt } from "@/app/store/prompt";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 
+export interface Prompt {
+  id: string;
+  isUser?: boolean;
+  title: string;
+  content: string;
+  createdAt: number;
+}
 export type RenderPompt = Pick<Prompt, "title" | "content">;
 
 export function PromptHints(props: {

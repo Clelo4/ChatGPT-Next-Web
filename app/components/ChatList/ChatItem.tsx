@@ -11,7 +11,7 @@ export default function ChatItem(props: {
   onDelete?: () => void;
   title: string;
   count: number;
-  time: string;
+  time?: string;
   selected: boolean;
   id: string;
   index: number;

@@ -13,7 +13,7 @@ export default function Avatar(props: { model?: any; avatar?: string }) {
 
   return (
     <div className="user-avatar">
-      {props.avatar && <EmojiAvatar avatar={props.avatar} />}
+      {props.avatar && <img src={props.avatar} alt="" />}
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChatMessage, useAppConfig, useChatStore } from "../../store";
-import { Updater } from "../../typing";
+import { useStore } from "@app/store";
+import { Updater } from "@app/typing";
 import Locale from "../../locales";
 
 import styles from "./message-selector.module.scss";
-import { getMessageTextContent } from "../../utils";
+import { getMessageTextContent } from "@app/utils";
 import Button from "../Button";
 import Avatar from "../Avatar";
 
@@ -70,7 +70,7 @@ export function MessageSelector(props: {
   defaultSelectAll?: boolean;
   onSelected?: (messages: ChatMessage[]) => void;
 }) {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const session = chatStore.currentSession();
   const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
   const allMessages = useMemo(() => {

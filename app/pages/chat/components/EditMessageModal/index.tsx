@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useChatStore } from "@/app/store";
 import { List, ListItem, Modal } from "@/app/components/ui-lib";
 import Locale from "@locales/index";
 import Button from "@/app/components/Button";
 import ConfirmIcon from "@icons/confirm.svg";
 import CancelIcon from "@icons/cancel.svg";
+import { useStore } from "@app/store";
 
 function EditMessageModal(props: { onClose: () => void }) {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const session = chatStore.currentSession();
   const [messages, setMessages] = useState(session.messages.slice());
 

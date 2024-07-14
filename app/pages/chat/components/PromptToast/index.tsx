@@ -1,16 +1,16 @@
-import { useChatStore } from "@/app/store";
 import React from "react";
 import SessionConfigModel from "../SessionConfigModel";
 
 import BrainIcon from "@icons/brain.svg";
 import styles from "../../chat.module.scss";
+import { useStore } from "@app/store";
 
 function PromptToast(props: {
   showToast?: boolean;
   showModal?: boolean;
   setShowModal: (_: boolean) => void;
 }) {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const session = chatStore.currentSession();
 
   return (

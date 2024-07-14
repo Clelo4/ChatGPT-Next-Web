@@ -4,27 +4,20 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 
-import { useChatStore } from "../../store";
-
 import Locale from "../../locales";
 import { useNavigate } from "react-router-dom";
-import { Path } from "../../constant";
+import { Path } from "@app/constant";
 import { showConfirm } from "../ui-lib";
-import { useMobileScreen } from "../../utils";
+import { useMobileScreen } from "@app/utils";
 import ChatItem from "./ChatItem";
+import { useStore } from "@app/store";
+import { observer } from "mobx-react-lite";
 
 export function ChatList(props: { narrow?: boolean }) {
-  const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
-    (state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.moveSession,
-    ],
-  );
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
+  const { chatList, currentChatId } = chatStore;
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -39,7 +32,7 @@ export function ChatList(props: { narrow?: boolean }) {
       return;
     }
 
-    moveSession(source.index, destination.index);
+    // moveSession(source.index, destination.index);
   };
 
   return (
@@ -47,25 +40,25 @@ export function ChatList(props: { narrow?: boolean }) {
       <Droppable droppableId="chat-list">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            {sessions.map((item, i) => (
+            {chatList.map((item, i) => (
               <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
+                title={item?.topic || Locale.Store.DefaultTopic}
+                count={item?.messages?.length || 0}
                 key={item.id}
                 id={item.id}
                 index={i}
-                selected={i === selectedIndex}
+                selected={item.id === currentChatId}
+                time={item.createdAt}
                 onClick={() => {
                   navigate(Path.Chat);
-                  selectSession(i);
+                  chatStore.setCurrentChat(item.id);
                 }}
                 onDelete={async () => {
                   if (
                     (!props.narrow && !isMobileScreen) ||
                     (await showConfirm(Locale.Home.DeleteChat))
                   ) {
-                    chatStore.deleteSession(i);
+                    chatStore.removeChat(item.id);
                   }
                 }}
                 narrow={props.narrow}
@@ -78,3 +71,5 @@ export function ChatList(props: { narrow?: boolean }) {
     </DragDropContext>
   );
 }
+
+export default observer(ChatList);

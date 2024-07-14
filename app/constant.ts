@@ -1,38 +1,8 @@
-export const OWNER = "Yidadaa";
-export const REPO = "ChatGPT-Next-Web";
-export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/commits?per_page=1`;
-export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
-export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
-
-export const DEFAULT_API_HOST = "https://api.nextchat.dev";
-export const OPENAI_BASE_URL = "https://api.openai.com";
-export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
-
-export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
-
 export enum Path {
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",
-  Masks = "/masks",
-  Auth = "/auth",
-}
-
-export enum ApiPath {
-  Cors = "",
-  Azure = "/api/azure",
-  OpenAI = "/api/openai",
-  Anthropic = "/api/anthropic",
-}
-
-export enum SlotID {
-  AppBody = "app-body",
-  CustomModel = "custom-model",
-}
-
-export enum FileName {
-  Masks = "masks.json",
-  Prompts = "prompts.json",
+  Login = "/login",
 }
 
 export enum StoreKey {
@@ -45,12 +15,23 @@ export enum StoreKey {
   Sync = "sync",
 }
 
+// 模型类型
+export enum MODEL_TYPE {
+  BASIC, // 基础模型
+  ADVANCED, // 高级模型
+}
+
+// 对话角色
+export enum ROLE {
+  SYSTEM,
+  ASSISTANT,
+  USER,
+}
+
 export const DEFAULT_SIDEBAR_WIDTH = 300;
 export const MAX_SIDEBAR_WIDTH = 500;
 export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
-
-export const ACCESS_CODE_PREFIX = "nk-";
 
 export const LAST_INPUT_KEY = "last-input";
 export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
@@ -59,59 +40,54 @@ export const STORAGE_KEY = "chatgpt-next-web";
 
 export const REQUEST_TIMEOUT_MS = 60000;
 
-export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
-
-export enum ServiceProvider {
-  OpenAI = "OpenAI",
-  Azure = "Azure",
-  Google = "Google",
-  Anthropic = "Anthropic",
-}
-
-export enum ModelProvider {
-  GPT = "GPT",
-  GeminiPro = "GeminiPro",
-  Claude = "Claude",
-}
-
-export const Anthropic = {
-  ChatPath: "v1/messages",
-  ChatPath1: "v1/complete",
-  ExampleEndpoint: "https://api.anthropic.com",
-  Vision: "2023-06-01",
-};
-
-export const OpenaiPath = {
-  ChatPath: "v1/chat/completions",
-  UsagePath: "dashboard/billing/usage",
-  SubsPath: "dashboard/billing/subscription",
-  ListModelPath: "v1/models",
-};
-
-export const Azure = {
-  ChatPath: (deployName: string, apiVersion: string) =>
-    `deployments/${deployName}/chat/completions?api-version=${apiVersion}`,
-  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
-};
-
-export const Google = {
-  ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
-};
-
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 
-export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by {{ServiceProvider}}.
-Knowledge cutoff: {{cutoff}}
-Current model: {{model}}
-Current time: {{time}}
-Latex inline: \\(x^2\\) 
-Latex block: $$e=mc^2$$
-`;
-
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
-export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
-
 export const CHAT_PAGE_SIZE = 15;
-export const MAX_RENDER_MSG_COUNT = 45;
+
+export enum SubmitKey {
+  Enter = "Enter",
+  CtrlEnter = "Ctrl + Enter",
+  ShiftEnter = "Shift + Enter",
+  AltEnter = "Alt + Enter",
+  MetaEnter = "Meta + Enter",
+}
+
+export const DEFAULT_CONFIG = {
+  lastUpdate: Date.now(), // timestamp, to merge state
+
+  submitKey: SubmitKey.Enter,
+  avatar: "1f603",
+  fontSize: 14,
+  tightBorder: true,
+  sendPreviewBubble: true,
+  enableAutoGenerateTitle: true,
+  sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+
+  disablePromptHint: false,
+
+  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+  hideBuiltinMasks: false, // dont add builtin masks
+
+  customModels: "",
+
+  modelConfig: {
+    model: "gpt-3.5-turbo",
+    providerName: "OpenAI",
+    temperature: 0.5,
+    top_p: 1,
+    max_tokens: 4000,
+    presence_penalty: 0,
+    frequency_penalty: 0,
+    sendMemory: true,
+    historyMessageCount: 4,
+    compressMessageLengthThreshold: 1000,
+    enableInjectSystemPrompts: true,
+    DEFAULT_INPUT_TEMPLATE,
+  },
+};
+
+export enum Theme {
+  Auto,
+  Dark,
+  Light,
+}

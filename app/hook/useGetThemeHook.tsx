@@ -1,10 +1,11 @@
-import { Theme, useAppConfig } from "../store";
+import { Theme } from "@app/constant";
+import { useStore } from "@app/store";
 
-// 获取当前主题
 const useGetThemeHook = () => {
-  const config = useAppConfig();
+  const { systemStore } = useStore();
 
-  if ([Theme.Dark, Theme.Light].includes(config.theme)) return config.theme;
+  if ([Theme.Dark, Theme.Light].includes(systemStore?.theme))
+    return systemStore?.theme;
   if (
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches

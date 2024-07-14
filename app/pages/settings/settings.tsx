@@ -29,17 +29,10 @@ import {
   Select,
   showConfirm,
   showToast,
-} from "../../components/ui-lib";
-import { ModelConfigList } from "../../components/ModalConfig/model-config";
+} from "@components/ui-lib";
+import { ModelConfigList } from "@components/ModalConfig/model-config";
 
-import {
-  SubmitKey,
-  useChatStore,
-  Theme,
-  useUpdateStore,
-  useAccessStore,
-  useAppConfig,
-} from "../../store";
+import { useStore } from "../../store";
 
 import Locale, {
   AllLangs,
@@ -47,25 +40,14 @@ import Locale, {
   changeLang,
   getLang,
 } from "../../locales";
-import { copyToClipboard } from "../../utils";
+import { copyToClipboard } from "@app/utils";
 import Link from "next/link";
-import {
-  Anthropic,
-  Azure,
-  Google,
-  OPENAI_BASE_URL,
-  Path,
-  STORAGE_KEY,
-  ServiceProvider,
-  SlotID,
-} from "../../constant";
-import { Prompt, SearchService, usePromptStore } from "../../store/prompt";
-import { InputRange } from "../../components/InputRange/input-range";
+import { Path, STORAGE_KEY } from "@app/constant";
+import { InputRange } from "@components/InputRange/input-range";
 import { useNavigate } from "react-router-dom";
-import { getClientConfig } from "../../config/client";
-import { useSyncStore } from "../../store/sync";
+import { getClientConfig } from "@config/client";
 import { nanoid } from "nanoid";
-import { ProviderType } from "../../utils/cloud";
+import { ProviderType } from "@app/utils/cloud";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import Button from "@/app/components/Button";
 import Avatar from "@/app/components/Avatar";
@@ -226,7 +208,7 @@ function UserPromptModal(props: { onClose?: () => void }) {
 }
 
 function DangerItems() {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const appConfig = useAppConfig();
 
   return (

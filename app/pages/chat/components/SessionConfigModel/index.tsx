@@ -1,6 +1,5 @@
 import Button from "@/app/components/Button";
 import { Modal, showConfirm } from "@/app/components/ui-lib";
-import { useChatStore } from "@/app/store";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,9 +7,10 @@ import CopyIcon from "@icons/copy.svg";
 import ResetIcon from "@icons/reload.svg";
 import Locale from "@/app/locales";
 import { Path } from "@/app/constant";
+import { useStore } from "@app/store";
 
 export function SessionConfigModel(props: { onClose: () => void }) {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
   const session = chatStore.currentSession();
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             bordered
             text={Locale.Chat.Config.SaveAs}
             onClick={() => {
-              navigate(Path.Masks);
+              // navigate(Path.Masks);
             }}
           />,
         ]}

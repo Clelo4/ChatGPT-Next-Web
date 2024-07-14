@@ -1,9 +1,6 @@
 import { ChatControllerPool } from "@/app/client/controller";
 import { Selector, showToast } from "@/app/components/ui-lib";
-import { ServiceProvider } from "@/app/constant";
-import { Theme, useAppConfig, useChatStore } from "@/app/store";
 import { isVisionModel } from "@/app/utils";
-import { useAllModels } from "@/app/utils/hooks";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatAction from "../ChatAction";
@@ -21,6 +18,9 @@ import LoadingButtonIcon from "@icons/loading.svg";
 import PromptIcon from "@icons/prompt.svg";
 import StopIcon from "@icons/pause.svg";
 import styles from "../../chat.module.scss";
+import { useStore } from "@app/store";
+import { Theme } from "@app/constant";
+import { observer } from "mobx-react-lite";
 
 function ChatActions(props: {
   uploadImage: () => void;
@@ -32,18 +32,17 @@ function ChatActions(props: {
   hitBottom: boolean;
   uploading: boolean;
 }) {
-  const config = useAppConfig();
+  const { systemStore, chatStore } = useStore();
   const navigate = useNavigate();
-  const chatStore = useChatStore();
 
   // switch themes
-  const theme = config.theme;
+  const theme = systemStore.theme;
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
     const themeIndex = themes.indexOf(theme);
     const nextIndex = (themeIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
-    config.update((config) => (config.theme = nextTheme));
+    systemStore.setTheme(nextTheme);
   }
 
   // stop all responses
@@ -52,42 +51,27 @@ function ChatActions(props: {
 
   // switch model
   const currentModel = "gpt3";
-  const currentProviderName = ServiceProvider.OpenAI;
-  const allModels = useAllModels();
-  const models = useMemo(() => {
-    const filteredModels = allModels.filter((m) => m.available);
-    const defaultModel = filteredModels.find((m) => m.isDefault);
-
-    if (defaultModel) {
-      const arr = [
-        defaultModel,
-        ...filteredModels.filter((m) => m !== defaultModel),
-      ];
-      return arr;
-    } else {
-      return filteredModels;
-    }
-  }, [allModels]);
+  const models = [];
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
-  useEffect(() => {
-    const show = isVisionModel(currentModel);
-    setShowUploadImage(show);
-    if (!show) {
-      props.setAttachImages([]);
-      props.setUploading(false);
-    }
-
-    // if current model is not available
-    // switch to first available model
-    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
-    if (isUnavaliableModel && models.length > 0) {
-      // show next model to default model if exist
-      let nextModel = models.find((model) => model.isDefault) || models[0];
-      showToast(nextModel.name);
-    }
-  }, [chatStore, currentModel, models]);
+  // useEffect(() => {
+  //   const show = isVisionModel(currentModel);
+  //   setShowUploadImage(show);
+  //   if (!show) {
+  //     props.setAttachImages([]);
+  //     props.setUploading(false);
+  //   }
+  //
+  //   // if current model is not available
+  //   // switch to first available model
+  //   const isUnavaliableModel = !models.some((m) => m.name === currentModel);
+  //   if (isUnavaliableModel && models.length > 0) {
+  //     // show next model to default model if exist
+  //     let nextModel = models.find((model) => model.isDefault) || models[0];
+  //     showToast(nextModel.name);
+  //   }
+  // }, [chatStore, currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -122,7 +106,7 @@ function ChatActions(props: {
       )}
       <ChatAction
         onClick={nextTheme}
-        text={Locale.Chat.InputActions.Theme[theme]}
+        text={""}
         icon={
           <>
             {theme === Theme.Auto ? (
@@ -146,14 +130,14 @@ function ChatActions(props: {
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
         onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = undefined;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
+          // chatStore.updateCurrentSession((session) => {
+          //   if (session.clearContextIndex === session.messages.length) {
+          //     session.clearContextIndex = undefined;
+          //   } else {
+          //     session.clearContextIndex = session.messages.length;
+          //     session.memoryPrompt = ""; // will clear memory
+          //   }
+          // });
         }}
       />
 
@@ -165,7 +149,7 @@ function ChatActions(props: {
 
       {showModelSelector && (
         <Selector
-          defaultSelectedValue={`${currentModel}@${currentProviderName}`}
+          defaultSelectedValue={`${currentModel}@`}
           items={models.map((m) => ({
             title: `${m.displayName}${
               m?.provider?.providerName
@@ -186,4 +170,4 @@ function ChatActions(props: {
   );
 }
 
-export default ChatActions;
+export default observer(ChatActions);

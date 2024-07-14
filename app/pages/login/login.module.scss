@@ -1,4 +1,4 @@
-.auth-page {
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,21 +6,21 @@
   width: 100%;
   flex-direction: column;
 
-  .auth-logo {
+  .login-logo {
     transform: scale(1.4);
   }
 
-  .auth-title {
+  .login-title {
     font-size: 24px;
     font-weight: bold;
     line-height: 2;
   }
 
-  .auth-input {
+  .login-input {
     margin: 3vh 0;
   }
 
-  .auth-actions {
+  .login-actions {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -30,7 +30,7 @@
     }
   }
 
-  .auth-next {
+  .login-next {
     margin-top: 10px;
   }
 }

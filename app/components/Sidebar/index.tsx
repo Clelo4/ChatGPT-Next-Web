@@ -7,32 +7,33 @@ import DeleteIcon from "@icons/delete.svg";
 import DragIcon from "@icons/drag.svg";
 
 import Locale from "@/app/locales";
-import { useAppConfig, useChatStore } from "@store/index";
 
 import { Path } from "@app/constant";
 
 import { Link, useNavigate } from "react-router-dom";
-import { isIOS, useMobileScreen } from "../../utils";
+import { isIOS, useMobileScreen } from "@app/utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "../ui-lib";
 import Button from "@components/Button";
 import styles from "./index.module.scss";
 import useDragSideBar from "@/app/hook/useDragSideBarHook";
+import { useStore } from "@app/store";
+import { observer } from "mobx-react-lite";
 
-const ChatList = dynamic(async () => (await import("../ChatList")).ChatList, {
+const ChatList = dynamic(async () => await import("../ChatList"), {
   loading: () => null,
 });
 
 function useHotKey() {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.altKey || e.ctrlKey) {
         if (e.key === "ArrowUp") {
-          chatStore.nextSession(-1);
+          // chatStore.nextSession(-1);
         } else if (e.key === "ArrowDown") {
-          chatStore.nextSession(1);
+          // chatStore.nextSession(1);
         }
       }
     };
@@ -43,12 +44,11 @@ function useHotKey() {
 }
 
 export function SideBar(props: { className?: string }) {
-  const chatStore = useChatStore();
+  const { chatStore } = useStore();
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-  const config = useAppConfig();
   const isMobileScreen = useMobileScreen();
   const isIOSMobile = useMemo(
     () => isIOS() && isMobileScreen,
@@ -97,7 +97,7 @@ export function SideBar(props: { className?: string }) {
               icon={<DeleteIcon />}
               onClick={async () => {
                 if (await showConfirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
+                  // chatStore.deleteSession(chatStore.currentSessionIndex);
                 }
               }}
             />
@@ -113,12 +113,8 @@ export function SideBar(props: { className?: string }) {
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                // navigate(Path.NewChat);
-              }
+              // chatStore.newSession();
+              navigate(Path.Chat);
             }}
             shadow
           />
@@ -134,3 +130,5 @@ export function SideBar(props: { className?: string }) {
     </div>
   );
 }
+
+export default observer(SideBar);

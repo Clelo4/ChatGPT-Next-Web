@@ -1,10 +1,9 @@
+"use client";
 import React from "react";
-import GithubIcon from "@icons/github.svg";
 import ResetIcon from "@icons/reload.svg";
 import Button from "../Button";
 import Locale from "@/app/locales";
 import { showConfirm } from "../ui-lib";
-import { useSyncStore } from "@/app/store/sync";
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -28,7 +27,6 @@ export default class ErrorBoundary extends React.Component<
 
   clearAndSaveData() {
     try {
-      useSyncStore.getState().export();
     } finally {
       localStorage.clear();
       location.reload();

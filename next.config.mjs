@@ -25,6 +25,7 @@ const APP_ALIAS_SUB_PATH = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -122,13 +123,17 @@ if (mode !== "export") {
         destination: "/"
       },
       {
-        source: "/auth",
+        source: "/login",
         destination: "/"
       },
       {
         source: "/chat",
         destination: "/"
-      }
+      },
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:8082/api/:path*",
+      },
     ];
 
     return {

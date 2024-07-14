@@ -12,9 +12,9 @@ import LoadingIcon from "@icons/three-dots.svg";
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
-import { ServiceProvider, ModelProvider, Path, SlotID } from "../constant";
+import { Path } from "../constant";
 
-import { getISOLang, getLang } from "../locales";
+import { getISOLang } from "../locales";
 
 import {
   BrowserRouter as Router,
@@ -22,12 +22,9 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { SideBar } from "../components/Sidebar";
-import { useAppConfig } from "../store/config";
-import { AuthPage } from "./auth/auth";
-import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
-import { useAccessStore } from "../store";
+import SideBar from "@components/Sidebar";
+import LoginPage from "@pages/login/login";
+import { getClientConfig } from "@config/client";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -46,12 +43,12 @@ const Settings = dynamic(
   },
 );
 
-const Chat = dynamic(async () => (await import("./chat/chat")).Chat, {
+const Chat = dynamic(async () => await import("./chat/chat"), {
   loading: () => <Loading noLogo />,
 });
 
 export function useSwitchTheme() {
-  const config = useAppConfig();
+  const config = { theme: "light" };
 
   useEffect(() => {
     document.body.classList.remove("light");
@@ -118,10 +115,9 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
-  const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const isAuth = location.pathname === Path.Auth;
+  const isAuth = location.pathname === Path.Login;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder = true;
 
@@ -138,13 +134,13 @@ function Screen() {
     >
       {isAuth ? (
         <>
-          <AuthPage />
+          <LoginPage />
         </>
       ) : (
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
+          <div className={styles["window-content"]}>
             <Routes>
               <Route path={Path.Home} element={<Chat />} />
               <Route path={Path.Chat} element={<Chat />} />
@@ -157,34 +153,12 @@ function Screen() {
   );
 }
 
-export function useLoadData() {
-  const config = useAppConfig();
-
-  var api: ClientApi;
-  if (config.modelConfig.providerName == ServiceProvider.Google) {
-    api = new ClientApi(ModelProvider.GeminiPro);
-  } else if (config.modelConfig.providerName == ServiceProvider.Anthropic) {
-    api = new ClientApi(ModelProvider.Claude);
-  } else {
-    api = new ClientApi(ModelProvider.GPT);
-  }
-  useEffect(() => {
-    (async () => {
-      const models = await api.llm.models();
-      config.mergeModels(models);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-}
-
 export function Home() {
   // useSwitchTheme();
-  useLoadData();
   useHtmlLang();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
-    useAccessStore.getState().fetch();
   }, []);
 
   if (!useHasHydrated()) {
@@ -192,10 +166,8 @@ export function Home() {
   }
 
   return (
-    <ErrorBoundary>
-      <Router basename="/">
-        <Screen />
-      </Router>
-    </ErrorBoundary>
+    <Router basename="/">
+      <Screen />
+    </Router>
   );
 }

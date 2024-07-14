@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-page-custom-font */
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
-import { getClientConfig } from "./config/client";
+import { getClientConfig } from "@config/client";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
