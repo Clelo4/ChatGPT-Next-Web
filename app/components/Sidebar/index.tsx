@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from "react";
 
-import SettingsIcon from "@icons/settings.svg";
 import ChatGptIcon from "@icons/chatgpt.svg";
 import AddIcon from "@icons/add.svg";
 import DeleteIcon from "@icons/delete.svg";
@@ -13,13 +12,12 @@ import { Path, Theme } from "@app/constant";
 import { useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "@app/utils";
 import dynamic from "next/dynamic";
-import { showConfirm, showToast } from "../ui-lib";
+import { showConfirm } from "../ui-lib";
 import Button from "@components/Button";
 import styles from "./index.module.scss";
 import useDragSideBar from "@/app/hook/useDragSideBarHook";
 import { useStore } from "@app/store";
 import { observer } from "mobx-react-lite";
-import ChatAction from "@pages/chat/components/ChatAction";
 import AutoIcon from "@icons/auto.svg";
 import LightIcon from "@icons/light.svg";
 import DarkIcon from "@icons/dark.svg";

@@ -23,5 +23,5 @@ function queryMeta(key: string, defaultValue?: string): string {
     ret = defaultValue ?? "";
   }
 
-  return ret;
+  return ret || "{}";
 }

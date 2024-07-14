@@ -1,5 +1,7 @@
 "use client";
 
+import useSwitchThemeHook from "@hook/useSwitchThemeHook";
+
 require("../polyfill");
 
 import { useState, useEffect } from "react";
@@ -26,6 +28,7 @@ import SideBar from "@components/Sidebar";
 import LoginPage from "@pages/login/login";
 import { getClientConfig } from "@config/client";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
+import { observer } from "mobx-react-lite";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -39,37 +42,6 @@ export function Loading(props: { noLogo?: boolean }) {
 const Chat = dynamic(async () => await import("./chat/chat"), {
   loading: () => <Loading noLogo />,
 });
-
-export function useSwitchTheme() {
-  const config = { theme: "light" };
-
-  useEffect(() => {
-    document.body.classList.remove("light");
-    document.body.classList.remove("dark");
-
-    if (config.theme === "dark") {
-      document.body.classList.add("dark");
-    } else if (config.theme === "light") {
-      document.body.classList.add("light");
-    }
-
-    const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media*="dark"]',
-    );
-    const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"][media*="light"]',
-    );
-
-    if (config.theme === "auto") {
-      metaDescriptionDark?.setAttribute("content", "#151515");
-      metaDescriptionLight?.setAttribute("content", "#fafafa");
-    } else {
-      const themeColor = getCSSVar("--theme-color");
-      metaDescriptionDark?.setAttribute("content", themeColor);
-      metaDescriptionLight?.setAttribute("content", themeColor);
-    }
-  }, [config.theme]);
-}
 
 function useHtmlLang() {
   useEffect(() => {
@@ -145,8 +117,8 @@ function Screen() {
   );
 }
 
-export function Home() {
-  // useSwitchTheme();
+const Home = () => {
+  useSwitchThemeHook();
   useHtmlLang();
 
   useEffect(() => {
@@ -162,4 +134,6 @@ export function Home() {
       <Screen />
     </Router>
   );
-}
+};
+
+export default observer(Home);
