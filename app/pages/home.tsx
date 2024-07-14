@@ -11,9 +11,8 @@ import styles from "./home.module.scss";
 import BotIcon from "@icons/bot.svg";
 import LoadingIcon from "@icons/three-dots.svg";
 
-import { getCSSVar, useMobileScreen } from "../utils";
+import { useMobileScreen } from "../utils";
 
-import dynamic from "next/dynamic";
 import { Path } from "../constant";
 
 import { getISOLang } from "../locales";
@@ -27,8 +26,8 @@ import {
 import SideBar from "@components/Sidebar";
 import LoginPage from "@pages/login/login";
 import { getClientConfig } from "@config/client";
-import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { observer } from "mobx-react-lite";
+import Chat from "@pages/chat/chat";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -38,11 +37,6 @@ export function Loading(props: { noLogo?: boolean }) {
     </div>
   );
 }
-
-const Chat = dynamic(async () => await import("./chat/chat"), {
-  loading: () => <Loading noLogo />,
-  ssr: false,
-});
 
 function useHtmlLang() {
   useEffect(() => {

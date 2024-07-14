@@ -11,7 +11,6 @@ import { Path, Theme } from "@app/constant";
 
 import { useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "@app/utils";
-import dynamic from "next/dynamic";
 import { showConfirm } from "../ui-lib";
 import Button from "@components/Button";
 import styles from "./index.module.scss";
@@ -21,11 +20,7 @@ import { observer } from "mobx-react-lite";
 import AutoIcon from "@icons/auto.svg";
 import LightIcon from "@icons/light.svg";
 import DarkIcon from "@icons/dark.svg";
-
-const ChatList = dynamic(async () => await import("../ChatList"), {
-  loading: () => null,
-  ssr: false,
-});
+import { ChatList } from "@components/ChatList";
 
 function useHotKey() {
   const { chatStore } = useStore();

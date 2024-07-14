@@ -42,12 +42,12 @@ import ChatActions from "@pages/chat/components/ChatActions";
 import DeleteImageButton from "@pages/chat/components/DeleteImageButton";
 import SendWhiteIcon from "@icons/send-white.svg";
 import { observer } from "mobx-react-lite";
-import dynamic from "next/dynamic";
 import LoadingIcon from "@icons/three-dots.svg";
 import { nanoid } from "nanoid";
 import { ChatMessage, MultimodalContent } from "@store/ChatStore";
 import useScrollToBottomHook from "@hook/useScrollToBottomHook";
 import useSubmitHandlerHook from "@hook/useSubmitHandlerHook";
+import { Markdown } from "@components/Markdown";
 
 const BOT_HELLO: ChatMessage = {
   role: ROLE.ASSISTANT,
@@ -58,14 +58,6 @@ const BOT_HELLO: ChatMessage = {
 };
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
-
-const Markdown = dynamic(
-  async () => (await import("@components/Markdown")).Markdown,
-  {
-    loading: () => <LoadingIcon />,
-    ssr: false,
-  },
-);
 
 type RenderMessage = ChatMessage & { preview?: boolean };
 
