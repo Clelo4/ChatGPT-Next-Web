@@ -18,13 +18,7 @@ import {
 } from "@app/utils";
 import { useNavigate } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  CHAT_PAGE_SIZE,
-  LAST_INPUT_KEY,
-  Path,
-  ROLE,
-  UNFINISHED_INPUT,
-} from "@app/constant";
+import { LAST_INPUT_KEY, Path, ROLE, UNFINISHED_INPUT } from "@app/constant";
 import { ChatControllerPool } from "@client/controller";
 import { showConfirm, showPrompt, showToast } from "@components/ui-lib";
 import Locale from "@app/locales";
@@ -35,7 +29,6 @@ import styles from "@pages/chat/chat.module.scss";
 import Button from "@components/Button";
 import ReturnIcon from "@icons/return.svg";
 import RenameIcon from "@icons/rename.svg";
-import PromptToast from "@pages/chat/components/PromptToast";
 import EditIcon from "@icons/rename.svg";
 import Avatar from "@components/Avatar";
 import ChatAction from "@pages/chat/components/ChatAction";
@@ -44,23 +37,24 @@ import ResetIcon from "@icons/reload.svg";
 import DeleteIcon from "@icons/clear.svg";
 import PinIcon from "@icons/pin.svg";
 import CopyIcon from "@icons/copy.svg";
-import ClearContextDivider from "@pages/chat/components/ClearContextDivider";
-import { PromptHints, RenderPompt } from "@components/PromptHints";
+import { RenderPompt } from "@components/PromptHints";
 import ChatActions from "@pages/chat/components/ChatActions";
 import DeleteImageButton from "@pages/chat/components/DeleteImageButton";
 import SendWhiteIcon from "@icons/send-white.svg";
-import EditMessageModal from "@pages/chat/components/EditMessageModal";
 import { observer } from "mobx-react-lite";
-import {
-  useScrollToBottom,
-  useSubmitHandler,
-} from "@pages/chat/components/ChatBox/utils";
 import dynamic from "next/dynamic";
 import LoadingIcon from "@icons/three-dots.svg";
+import { nanoid } from "nanoid";
+import { ChatMessage, MultimodalContent } from "@store/ChatStore";
+import useScrollToBottomHook from "@hook/useScrollToBottomHook";
+import useSubmitHandlerHook from "@hook/useSubmitHandlerHook";
 
-const BOT_HELLO = {
+const BOT_HELLO: ChatMessage = {
   role: ROLE.ASSISTANT,
   content: Locale.Store.BotHello,
+  id: nanoid(),
+  streaming: false,
+  date: new Date().toLocaleDateString(),
 };
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -72,11 +66,20 @@ const Markdown = dynamic(
   },
 );
 
-interface ChatMessage {}
-
 type RenderMessage = ChatMessage & { preview?: boolean };
 
-function ChatBox() {
+function createFakeMessage(override: Partial<ChatMessage>): ChatMessage {
+  // @ts-ignore
+  return {
+    id: nanoid(),
+    date: new Date().toLocaleString(),
+    role: ROLE.USER,
+    content: "",
+    ...override,
+  };
+}
+
+const ChatBox = () => {
   const { systemStore, chatStore, promptStore, userStore } = useStore();
   const fontSize = systemStore.fontSize;
 
@@ -85,19 +88,10 @@ function ChatBox() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { submitKey, shouldSubmit } = useSubmitHandler();
+  const { submitKey, shouldSubmit } = useSubmitHandlerHook();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const isScrolledToBottom = scrollRef?.current
-    ? Math.abs(
-        scrollRef.current.scrollHeight -
-          (scrollRef.current.scrollTop + scrollRef.current.clientHeight),
-      ) <= 1
-    : false;
-  const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
-    scrollRef,
-    isScrolledToBottom,
-  );
-  const [hitBottom, setHitBottom] = useState(true);
+  const { isHitBottom, setAutoScroll, scrollDomToBottom } =
+    useScrollToBottomHook(scrollRef, false);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
@@ -240,61 +234,61 @@ function ChatBox() {
     deleteMessage(msgId);
   };
 
-  const onResend = (message: ChatMessage) => {
-    // when it is resending a message
-    // 1. for a user's message, find the next bot response
-    // 2. for a bot's message, find the last user's input
-    // 3. delete original user input and bot's message
-    // 4. resend the user's input
-
-    const resendingIndex = curChat?.messages?.findIndex(
-      (m) => m?.messageId === message?.messageId,
-    );
-
-    if (resendingIndex < 0 || resendingIndex >= curChat?.messages?.length) {
-      console.error("[Chat] failed to find resending message", message);
-      return;
-    }
-
-    let userMessage: ChatMessage | undefined;
-    let botMessage: ChatMessage | undefined;
-
-    if (message?.role === ROLE.ASSISTANT) {
-      // if it is resending a bot's message, find the user input for it
-      botMessage = message;
-      for (let i = resendingIndex; i >= 0; i -= 1) {
-        if (curChat?.messages[i]?.role === ROLE.USER) {
-          userMessage = curChat?.messages[i];
-          break;
-        }
-      }
-    } else if (message?.role === ROLE.USER) {
-      // if it is resending a user's input, find the bot's response
-      userMessage = message;
-      for (let i = resendingIndex; i < curChat?.messages.length; i += 1) {
-        if (curChat?.messages[i]?.role === ROLE.ASSISTANT) {
-          botMessage = curChat?.messages[i];
-          break;
-        }
-      }
-    }
-
-    if (userMessage === undefined) {
-      console.error("[Chat] failed to resend", message);
-      return;
-    }
-
-    // delete the original messages
-    deleteMessage(usermessage?.id);
-    deleteMessage(botMessage?.id);
-
-    // resend the message
-    setIsLoading(true);
-    const textContent = getMessageTextContent(userMessage);
-    const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
-    inputRef.current?.focus();
-  };
+  // const onResend = (message: ChatMessage) => {
+  //   // when it is resending a message
+  //   // 1. for a user's message, find the next bot response
+  //   // 2. for a bot's message, find the last user's input
+  //   // 3. delete original user input and bot's message
+  //   // 4. resend the user's input
+  //
+  //   const resendingIndex = curChat?.messages?.findIndex(
+  //     (m) => m?.messageId === message?.messageId,
+  //   );
+  //
+  //   if (resendingIndex < 0 || resendingIndex >= curChat?.messages?.length) {
+  //     console.error("[Chat] failed to find resending message", message);
+  //     return;
+  //   }
+  //
+  //   let userMessage: ChatMessage | undefined;
+  //   let botMessage: ChatMessage | undefined;
+  //
+  //   if (message?.role === ROLE.ASSISTANT) {
+  //     // if it is resending a bot's message, find the user input for it
+  //     botMessage = message;
+  //     for (let i = resendingIndex; i >= 0; i -= 1) {
+  //       if (curChat?.messages[i]?.role === ROLE.USER) {
+  //         userMessage = curChat?.messages[i];
+  //         break;
+  //       }
+  //     }
+  //   } else if (message?.role === ROLE.USER) {
+  //     // if it is resending a user's input, find the bot's response
+  //     userMessage = message;
+  //     for (let i = resendingIndex; i < curChat?.messages.length; i += 1) {
+  //       if (curChat?.messages[i]?.role === ROLE.ASSISTANT) {
+  //         botMessage = curChat?.messages[i];
+  //         break;
+  //       }
+  //     }
+  //   }
+  //
+  //   if (userMessage === undefined) {
+  //     console.error("[Chat] failed to resend", message);
+  //     return;
+  //   }
+  //
+  //   // delete the original messages
+  //   deleteMessage(usermessage?.id);
+  //   deleteMessage(botMessage?.id);
+  //
+  //   // resend the message
+  //   setIsLoading(true);
+  //   const textContent = getMessageTextContent(userMessage);
+  //   const images = getMessageImages(userMessage);
+  //   chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+  //   inputRef.current?.focus();
+  // };
 
   const onPinMessage = (message: ChatMessage) => {
     showToast(Locale.Chat.Actions.PinToastContent, {
@@ -328,7 +322,7 @@ function ChatBox() {
         isLoading
           ? [
               {
-                ...createMessage({
+                ...createFakeMessage({
                   role: ROLE.ASSISTANT,
                   content: "……",
                 }),
@@ -341,7 +335,7 @@ function ChatBox() {
         userInput.length > 0 && systemStore.sendPreviewBubble
           ? [
               {
-                ...createMessage({
+                ...createFakeMessage({
                   role: ROLE.USER,
                   content: userInput,
                 }),
@@ -358,54 +352,9 @@ function ChatBox() {
     userInput,
   ]);
 
-  const [msgRenderIndex, _setMsgRenderIndex] = useState(
-    Math.max(0, renderMessages.length - CHAT_PAGE_SIZE),
-  );
-  function setMsgRenderIndex(newIndex: number) {
-    newIndex = Math.min(renderMessages.length - CHAT_PAGE_SIZE, newIndex);
-    newIndex = Math.max(0, newIndex);
-    _setMsgRenderIndex(newIndex);
-  }
-
   const messages = useMemo(() => {
-    const endRenderIndex = Math.min(
-      msgRenderIndex + 3 * CHAT_PAGE_SIZE,
-      renderMessages.length,
-    );
-    return renderMessages.slice(msgRenderIndex, endRenderIndex);
-  }, [msgRenderIndex, renderMessages]);
-
-  const onChatBodyScroll = (e: HTMLElement) => {
-    const bottomHeight = e.scrollTop + e.clientHeight;
-    const edgeThreshold = e.clientHeight;
-
-    const isTouchTopEdge = e.scrollTop <= edgeThreshold;
-    const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
-    const isHitBottom =
-      bottomHeight >= e.scrollHeight - (isMobileScreen ? 4 : 10);
-
-    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
-    const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
-
-    if (isTouchTopEdge && !isTouchBottomEdge) {
-      setMsgRenderIndex(prevPageMsgIndex);
-    } else if (isTouchBottomEdge) {
-      setMsgRenderIndex(nextPageMsgIndex);
-    }
-
-    setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
-  };
-  function scrollToBottom() {
-    setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
-    scrollDomToBottom();
-  }
-
-  // clear context index = context length + index in messages
-  const clearContextIndex =
-    (curChat?.clearContextIndex ?? -1) >= 0
-      ? curChat?.clearContextIndex! + context.length - msgRenderIndex
-      : -1;
+    return renderMessages;
+  }, [renderMessages]);
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
@@ -414,72 +363,22 @@ function ChatBox() {
   const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
-  useCommand({
-    fill: setUserInput,
-    submit: (text) => {
-      doSubmit(text);
-    },
-    code: (text) => {
-      if (accessStore.disableFastLink) return;
-      console.log("[Command] got code from url: ", text);
-      showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
-        if (res) {
-          accessStore.update((access) => (access.accessCode = text));
-        }
-      });
-    },
-    settings: (text) => {
-      if (accessStore.disableFastLink) return;
-
-      try {
-        const payload = JSON.parse(text) as {
-          key?: string;
-          url?: string;
-        };
-
-        console.log("[Command] got settings from url: ", payload);
-
-        if (payload.key || payload.url) {
-          showConfirm(
-            Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
-          ).then((res) => {
-            if (!res) return;
-            if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
-            }
-            if (payload.url) {
-              accessStore.update((access) => (access.openaiUrl = payload.url!));
-            }
-            accessStore.update((access) => (access.useCustomConfig = true));
-          });
-        }
-      } catch {
-        console.error("[Command] failed to get settings from url: ", text);
-      }
-    },
-  });
-
-  // edit / insert message modal
-  const [isEditingMessage, setIsEditingMessage] = useState(false);
-
   // remember unfinished input
   useEffect(() => {
-    // try to load from local storage
-    const key = UNFINISHED_INPUT(curChat?.id);
-    const mayBeUnfinishedInput = localStorage.getItem(key);
-    if (mayBeUnfinishedInput && userInput.length === 0) {
-      setUserInput(mayBeUnfinishedInput);
-      localStorage.removeItem(key);
-    }
+    if (curChat?.id) {
+      // try to load from local storage
+      const key = UNFINISHED_INPUT(curChat.id);
+      const mayBeUnfinishedInput = localStorage.getItem(key);
+      if (mayBeUnfinishedInput && userInput.length === 0) {
+        setUserInput(mayBeUnfinishedInput);
+        localStorage.removeItem(key);
+      }
 
-    const dom = inputRef.current;
-    return () => {
-      localStorage.setItem(key, dom?.value ?? "");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      const dom = inputRef.current;
+      return () => {
+        localStorage.setItem(key, dom?.value ?? "");
+      };
+    }
   }, []);
 
   const handlePaste = useCallback(
@@ -589,37 +488,20 @@ function ChatBox() {
         <div className={`window-header-title ${styles["chat-body-title"]}`}>
           <div
             className={`window-header-main-title ${styles["chat-body-main-title"]}`}
-            onClickCapture={() => setIsEditingMessage(true)}
           >
             {!curChat?.topic ? DEFAULT_TOPIC : curChat?.topic}
           </div>
           <div className="window-header-sub-title">
-            {Locale.Chat.SubTitle(curChat?.messages?.length)}
+            {Locale.Chat.SubTitle(curChat?.messages?.length || 0)}
           </div>
+          {/*<div>renderMessages: {renderMessages?.length} context: {context?.length} renderMessages: {renderMessages?.length} messages: {messages?.length}</div>*/}
         </div>
-        <div className="window-actions">
-          {!isMobileScreen && (
-            <div className="window-action-button">
-              <Button
-                icon={<RenameIcon />}
-                bordered
-                onClick={() => setIsEditingMessage(true)}
-              />
-            </div>
-          )}
-        </div>
-
-        {/*<PromptToast*/}
-        {/*    showToast={!hitBottom}*/}
-        {/*    showModal={showPromptModal}*/}
-        {/*    setShowModal={setShowPromptModal}*/}
-        {/*/>*/}
+        <div className="window-actions"></div>
       </div>
 
       <div
         className={styles["chat-body"]}
         ref={scrollRef}
-        onScroll={(e) => onChatBodyScroll(e.currentTarget)}
         onMouseDown={() => inputRef.current?.blur()}
         onTouchStart={() => {
           inputRef.current?.blur();
@@ -631,14 +513,12 @@ function ChatBox() {
           const isContext = i < context.length;
           const showActions =
             i > 0 &&
-            !(message?.preview || message?.content.length === 0) &&
+            !(message?.preview || !message?.content?.length) &&
             !isContext;
           const showTyping = message?.preview || message?.streaming;
 
-          const shouldShowClearContextDivider = i === clearContextIndex - 1;
-
           return (
-            <Fragment key={message?.messageId}>
+            <Fragment key={message?.id}>
               <div
                 className={
                   isUser ? styles["chat-message-user"] : styles["chat-message"]
@@ -695,11 +575,11 @@ function ChatBox() {
                             />
                           ) : (
                             <>
-                              <ChatAction
-                                text={Locale.Chat.Actions.Retry}
-                                icon={<ResetIcon />}
-                                onClick={() => onResend(message)}
-                              />
+                              {/*<ChatAction*/}
+                              {/*  text={Locale.Chat.Actions.Retry}*/}
+                              {/*  icon={<ResetIcon />}*/}
+                              {/*  onClick={() => onResend(message)}*/}
+                              {/*/>*/}
 
                               <ChatAction
                                 text={Locale.Chat.Actions.Delete}
@@ -788,22 +668,19 @@ function ChatBox() {
                   </div>
                 </div>
               </div>
-              {shouldShowClearContextDivider && <ClearContextDivider />}
             </Fragment>
           );
         })}
       </div>
 
       <div className={styles["chat-input-panel"]}>
-        {/*<PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />*/}
-
         <ChatActions
           uploadImage={uploadImage}
           setAttachImages={setAttachImages}
           setUploading={setUploading}
           showPromptModal={() => setShowPromptModal(true)}
-          scrollToBottom={scrollToBottom}
-          hitBottom={hitBottom}
+          scrollToBottom={scrollDomToBottom}
+          hitBottom={isHitBottom}
           uploading={uploading}
           showPromptHints={() => {
             // Click again to close
@@ -811,10 +688,9 @@ function ChatBox() {
             //   setPromptHints([]);
             //   return;
             // }
-
-            inputRef.current?.focus();
-            setUserInput("/");
-            onSearch("");
+            // inputRef.current?.focus();
+            // setUserInput("/");
+            // onSearch("");
           }}
         />
         <label
@@ -833,8 +709,8 @@ function ChatBox() {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
-            onFocus={scrollToBottom}
-            onClick={scrollToBottom}
+            onFocus={scrollDomToBottom}
+            onClick={scrollDomToBottom}
             onPaste={handlePaste}
             rows={inputRows}
             autoFocus={autoFocus}
@@ -874,16 +750,8 @@ function ChatBox() {
           />
         </label>
       </div>
-
-      {/*{isEditingMessage && (*/}
-      {/*    <EditMessageModal*/}
-      {/*        onClose={() => {*/}
-      {/*            setIsEditingMessage(false);*/}
-      {/*        }}*/}
-      {/*    />*/}
-      {/*)}*/}
     </div>
   );
-}
+};
 
 export default observer(ChatBox);

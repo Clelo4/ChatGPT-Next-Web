@@ -1,4 +1,3 @@
-import { Prompt } from "@/app/store/prompt";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 

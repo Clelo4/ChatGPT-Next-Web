@@ -17,7 +17,7 @@ export function ChatList(props: { narrow?: boolean }) {
   const { chatStore } = useStore();
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
-  const { chatList, currentChatId } = chatStore;
+  const { chatList } = chatStore;
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -47,7 +47,7 @@ export function ChatList(props: { narrow?: boolean }) {
                 key={item.id}
                 id={item.id}
                 index={i}
-                selected={item.id === currentChatId}
+                selected={item.id === chatStore.getCurrentChatId()}
                 time={item.createdAt}
                 onClick={() => {
                   navigate(Path.Chat);

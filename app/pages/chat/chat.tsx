@@ -7,7 +7,7 @@ import ChatBox from "@pages/chat/components/ChatBox";
 
 const Chat = () => {
   const { chatStore } = useStore();
-  const sessionIndex = chatStore.currentChatId;
+  const sessionIndex = chatStore.getCurrentChatId();
   return <ChatBox key={sessionIndex}></ChatBox>;
 };
 

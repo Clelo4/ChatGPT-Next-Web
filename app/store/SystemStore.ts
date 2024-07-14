@@ -4,8 +4,9 @@ import { DEFAULT_SIDEBAR_WIDTH, SubmitKey, Theme } from "@app/constant";
 class SystemStore {
   theme: Theme = Theme.Light;
   sidebarWidth: number = DEFAULT_SIDEBAR_WIDTH;
-  fontSize: string = "14px";
+  fontSize: number = 14;
   submitKey: SubmitKey = SubmitKey.ShiftEnter;
+  sendPreviewBubble: boolean = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -19,7 +20,7 @@ class SystemStore {
     this.sidebarWidth = width;
   }
 
-  setFontSize(fontSize: string) {
+  setFontSize(fontSize: number) {
     this.fontSize = fontSize;
   }
 }

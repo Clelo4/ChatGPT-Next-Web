@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { showToast } from "@components/ui-lib";
 import Locale from "./locales";
-import { ChatRequestMessage } from "@client/api";
+import { ChatMessage } from "@store/ChatStore";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -222,7 +222,7 @@ export function isMacOS(): boolean {
   return false;
 }
 
-export function getMessageTextContent(message: ChatRequestMessage) {
+export function getMessageTextContent(message: ChatMessage) {
   if (typeof message?.content === "string") {
     return message.content;
   }
@@ -236,7 +236,7 @@ export function getMessageTextContent(message: ChatRequestMessage) {
   return "";
 }
 
-export function getMessageImages(message: ChatRequestMessage): string[] {
+export function getMessageImages(message: ChatMessage): string[] {
   if (typeof message?.content === "string") {
     return [];
   }

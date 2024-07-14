@@ -1,11 +1,6 @@
 import { ROLE } from "@app/constant";
 import { $fetch } from "@app/utils/request";
 
-export interface ChatRequestMessage {
-  role: ROLE;
-  content: string;
-}
-
 export const loginAPI = async () => {
   return await $fetch("/api/user/login", {});
 };

@@ -36,13 +36,6 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-const Settings = dynamic(
-  async () => (await import("./settings/settings")).Settings,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
-
 const Chat = dynamic(async () => await import("./chat/chat"), {
   loading: () => <Loading noLogo />,
 });
@@ -144,7 +137,6 @@ function Screen() {
             <Routes>
               <Route path={Path.Home} element={<Chat />} />
               <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
             </Routes>
           </div>
         </>

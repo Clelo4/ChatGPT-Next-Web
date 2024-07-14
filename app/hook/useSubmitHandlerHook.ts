@@ -1,40 +1,8 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
 import { useStore } from "@app/store";
+import React, { useEffect, useRef } from "react";
 import { SubmitKey } from "@app/constant";
 
-export function useScrollToBottom(
-  scrollRef: RefObject<HTMLDivElement>,
-  detach: boolean = false,
-) {
-  // for auto-scroll
-
-  const [autoScroll, setAutoScroll] = useState(true);
-  function scrollDomToBottom() {
-    const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => {
-        setAutoScroll(true);
-        dom.scrollTo(0, dom.scrollHeight);
-      });
-    }
-  }
-
-  // auto scroll
-  useEffect(() => {
-    if (autoScroll && !detach) {
-      scrollDomToBottom();
-    }
-  });
-
-  return {
-    scrollRef,
-    autoScroll,
-    setAutoScroll,
-    scrollDomToBottom,
-  };
-}
-
-export function useSubmitHandler() {
+const useSubmitHandlerHook = () => {
   const { systemStore } = useStore();
   const submitKey = systemStore.submitKey;
   const isComposing = useRef(false);
@@ -79,4 +47,6 @@ export function useSubmitHandler() {
     submitKey,
     shouldSubmit,
   };
-}
+};
+
+export default useSubmitHandlerHook;

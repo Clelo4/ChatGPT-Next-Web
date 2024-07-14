@@ -1,41 +1,50 @@
 import { makeAutoObservable } from "mobx";
 import { ROLE } from "@app/constant";
+import mockDataList from "./mock.json";
 
-interface MessageType {
-  role?: ROLE;
-  content?: string;
-  id: string;
-  date?: string;
+export interface MultimodalContent {
+  type: "text" | "image_url";
+  text?: string;
+  image_url?: {
+    url: string;
+  };
 }
 
-interface ChatType {
+export interface ChatMessage {
+  role: ROLE;
+  content: string | MultimodalContent[];
   id: string;
-  messages?: MessageType[];
-  topic?: string;
+  date: string;
+  streaming: boolean;
+}
+
+export interface ChatType {
+  id: string;
+  messages: ChatMessage[];
+  topic: string;
   createdAt?: string;
 }
+
+let messageId = +new Date();
+
+const roleMap = {
+  user: ROLE.USER,
+  system: ROLE.SYSTEM,
+  assistant: ROLE.ASSISTANT,
+};
+
+const moreMessages: ChatMessage[] = mockDataList.map((data) => ({
+  role: roleMap[data.role as "user" | "system" | "assistant"],
+  content: data.content,
+  id: String(++messageId),
+  date: new Date().toLocaleDateString(),
+  streaming: false,
+}));
 
 const mockChatList = [
   {
     id: "chat-1",
-    messages: [
-      {
-        role: ROLE.SYSTEM,
-        content:
-          "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.",
-        id: "message-1",
-      },
-      {
-        role: ROLE.USER,
-        content: "Hello, who are you?",
-        id: "message-1",
-      },
-      {
-        role: ROLE.ASSISTANT,
-        content: "I am an assistant created by OpenAI.",
-        id: "message-2",
-      },
-    ],
+    messages: [...moreMessages],
     topic: "ChatGPT",
     createdAt: "2022-01-01 00:00:00",
   },
@@ -48,7 +57,7 @@ const mockChatList = [
 ];
 
 class ChatStore {
-  currentChatId?: string;
+  private currentChatId?: string;
 
   chatList: Array<ChatType> = mockChatList;
 
@@ -61,9 +70,11 @@ class ChatStore {
   }
 
   getCurrentChat(): ChatType | undefined {
-    return this.currentChatId
-      ? this.chatList.find((item) => item.id === this.currentChatId)
-      : undefined;
+    const targetId = this.getCurrentChatId();
+    if (!targetId) return undefined;
+    const found = this.chatList.find((item) => item.id === targetId);
+    if (found) return found;
+    return undefined;
   }
 
   removeChat(chatId: string) {
@@ -71,6 +82,17 @@ class ChatStore {
     if (this.currentChatId === chatId) {
       this.currentChatId = undefined;
     }
+  }
+
+  getCurrentChatId() {
+    if (
+      this.currentChatId !== "" &&
+      this.currentChatId !== undefined &&
+      this.currentChatId !== null
+    )
+      return this.currentChatId;
+    if (this.chatList.length > 0) return this.chatList[0].id;
+    return null;
   }
 }
 

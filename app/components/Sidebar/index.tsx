@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import SettingsIcon from "@icons/settings.svg";
 import ChatGptIcon from "@icons/chatgpt.svg";
@@ -8,9 +8,9 @@ import DragIcon from "@icons/drag.svg";
 
 import Locale from "@/app/locales";
 
-import { Path } from "@app/constant";
+import { Path, Theme } from "@app/constant";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "@app/utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "../ui-lib";
@@ -19,6 +19,10 @@ import styles from "./index.module.scss";
 import useDragSideBar from "@/app/hook/useDragSideBarHook";
 import { useStore } from "@app/store";
 import { observer } from "mobx-react-lite";
+import ChatAction from "@pages/chat/components/ChatAction";
+import AutoIcon from "@icons/auto.svg";
+import LightIcon from "@icons/light.svg";
+import DarkIcon from "@icons/dark.svg";
 
 const ChatList = dynamic(async () => await import("../ChatList"), {
   loading: () => null,
@@ -44,7 +48,7 @@ function useHotKey() {
 }
 
 export function SideBar(props: { className?: string }) {
-  const { chatStore } = useStore();
+  const { systemStore, chatStore } = useStore();
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -54,6 +58,16 @@ export function SideBar(props: { className?: string }) {
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
+
+  // switch themes
+  const theme = systemStore.theme;
+  function nextTheme() {
+    const themes = [Theme.Auto, Theme.Light, Theme.Dark];
+    const themeIndex = themes.indexOf(theme);
+    const nextIndex = (themeIndex + 1) % themes.length;
+    const nextTheme = themes[nextIndex];
+    systemStore.setTheme(nextTheme);
+  }
 
   useHotKey();
 
@@ -103,9 +117,20 @@ export function SideBar(props: { className?: string }) {
             />
           </div>
           <div className={styles["sidebar-action"]}>
-            <Link to={Path.Settings}>
-              <Button icon={<SettingsIcon />} shadow />
-            </Link>
+            <Button
+              icon={
+                <>
+                  {theme === Theme.Auto ? (
+                    <AutoIcon />
+                  ) : theme === Theme.Light ? (
+                    <LightIcon />
+                  ) : theme === Theme.Dark ? (
+                    <DarkIcon />
+                  ) : null}
+                </>
+              }
+              onClick={nextTheme}
+            ></Button>
           </div>
         </div>
         <div>
