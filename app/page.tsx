@@ -1,3 +1,5 @@
+"use client";
+
 import Home from "@pages/home";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { StoreProvider } from "@app/store";

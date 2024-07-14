@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { useStore } from "@app/store";
 import { getUserInfoAPI } from "@client/api";

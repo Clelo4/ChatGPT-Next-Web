@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./login.module.scss";
 
 import { useNavigate } from "react-router-dom";

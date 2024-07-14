@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { getCSSVar } from "@app/utils";
 import { useStore } from "@app/store";

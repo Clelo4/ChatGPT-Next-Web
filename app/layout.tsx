@@ -1,17 +1,10 @@
+"use client";
+
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "@config/client";
-import type { Metadata, Viewport } from "next";
-
-export const metadata: Metadata = {
-  title: "NextChat",
-  description: "Your personal ChatGPT Chat Bot.",
-  appleWebApp: {
-    title: "NextChat",
-    statusBarStyle: "default",
-  },
-};
+import type { Viewport } from "next";
 
 export const viewport: Viewport = {
   width: "device-width",

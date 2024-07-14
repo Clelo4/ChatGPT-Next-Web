@@ -1,3 +1,5 @@
+"use client";
+
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 
 function getEmojiUrl(unified: string, style: EmojiStyle) {

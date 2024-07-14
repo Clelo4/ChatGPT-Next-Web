@@ -1,3 +1,5 @@
+"use client";
+
 import { useStore } from "@app/store";
 import React, { useEffect, useRef } from "react";
 import { SubmitKey } from "@app/constant";

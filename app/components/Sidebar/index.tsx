@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useMemo } from "react";
 
 import ChatGptIcon from "@icons/chatgpt.svg";

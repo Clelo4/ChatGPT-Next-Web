@@ -1,3 +1,5 @@
+"use client";
+
 import { getClientConfig } from "@config/client";
 import { SubmitKey } from "@app/constant";
 

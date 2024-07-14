@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import Script from "next/script";
 import { hashStringUsingSHA256 } from "@/app/utils/crypto";

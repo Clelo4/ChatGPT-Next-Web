@@ -1,3 +1,5 @@
+"use client";
+
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useMobileScreen } from "@app/utils";
 
