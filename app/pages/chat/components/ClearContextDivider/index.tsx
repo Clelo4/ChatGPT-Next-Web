@@ -1,3 +1,5 @@
+"use client";
+
 import { useStore } from "@/app/store";
 import React from "react";
 import Locale from "@locales/index";

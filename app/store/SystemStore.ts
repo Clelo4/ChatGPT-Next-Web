@@ -1,3 +1,5 @@
+"use client";
+
 import { makeAutoObservable } from "mobx";
 import { DEFAULT_SIDEBAR_WIDTH, SubmitKey, Theme } from "@app/constant";
 
