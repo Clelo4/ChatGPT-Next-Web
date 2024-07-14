@@ -24,6 +24,7 @@ import DarkIcon from "@icons/dark.svg";
 
 const ChatList = dynamic(async () => await import("../ChatList"), {
   loading: () => null,
+  ssr: false,
 });
 
 function useHotKey() {

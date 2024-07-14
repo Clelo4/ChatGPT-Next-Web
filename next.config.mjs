@@ -109,3 +109,5 @@ if (mode !== "export") {
 }
 
 export default nextConfig;
+
+export const runtime = 'edge';

@@ -63,6 +63,7 @@ const Markdown = dynamic(
   async () => (await import("@components/Markdown")).Markdown,
   {
     loading: () => <LoadingIcon />,
+    ssr: false,
   },
 );
 

@@ -41,6 +41,7 @@ export function Loading(props: { noLogo?: boolean }) {
 
 const Chat = dynamic(async () => await import("./chat/chat"), {
   loading: () => <Loading noLogo />,
+  ssr: false,
 });
 
 function useHtmlLang() {
