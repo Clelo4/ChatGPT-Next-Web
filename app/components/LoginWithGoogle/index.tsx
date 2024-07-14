@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import Script from "next/script";
-import { getHeaders } from "@/app/client/api";
 import { hashStringUsingSHA256 } from "@/app/utils/crypto";
 
 interface IProps {
@@ -17,7 +16,6 @@ const LoginWithGoogle = (props: IProps) => {
       method: "POST",
       body: JSON.stringify({ token, csrfToken }),
       // signal: controller.signal,
-      headers: getHeaders(),
     };
 
     const res = await fetch("/api/auth/google", payload);

@@ -1,4 +1,4 @@
-import { jsonPost } from "@/app/utils/request";
+import { $fetch } from "@/app/utils/request";
 import Script from "next/script";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
@@ -10,7 +10,7 @@ interface IProps {
 
 const validateCaptcha = async (token: string) => {
   try {
-    const data = await jsonPost<{ jwtToken: string }>("/api/login/cloudflare", {
+    const data = await $fetch<{ jwtToken: string }>("/api/login/cloudflare", {
       token,
     });
 

@@ -12,7 +12,7 @@ export async function uploadImage(attachImages: string[]) {
         "image/png, image/jpeg, image/webp, image/heic, image/heif";
       fileInput.multiple = true;
       fileInput.onchange = (event: any) => {
-        setUploading(true);
+        // setUploading(true);
         const files = event.target.files;
         const imagesData: string[] = [];
         for (let i = 0; i < files.length; i++) {
@@ -24,12 +24,12 @@ export async function uploadImage(attachImages: string[]) {
                 imagesData.length === 3 ||
                 imagesData.length === files.length
               ) {
-                setUploading(false);
+                // setUploading(false);
                 res(imagesData);
               }
             })
             .catch((e) => {
-              setUploading(false);
+              // setUploading(false);
               rej(e);
             });
         }
@@ -42,5 +42,5 @@ export async function uploadImage(attachImages: string[]) {
   if (imagesLength > 3) {
     images.splice(3, imagesLength - 3);
   }
-  setAttachImages(images);
+  // setAttachImages(images);
 }
