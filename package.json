@@ -7,7 +7,7 @@
     "build": "cross-env BUILD_MODE=export next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "yarn mask && cross-env BUILD_MODE=export BUILD_APP=1 next build",
+    "export": "cross-env BUILD_MODE=export BUILD_APP=1 next build",
     "export:dev": "yarn mask:watch & cross-env BUILD_MODE=export BUILD_APP=1 next dev",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
